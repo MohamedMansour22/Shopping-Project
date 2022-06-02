@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entites\Parameters\" />
+    <Compile Remove="Processor\**" />
+    <EmbeddedResource Remove="Processor\**" />
+    <None Remove="Processor\**" />
   </ItemGroup>
 
   <ItemGroup>
