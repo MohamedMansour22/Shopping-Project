@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SQL_Provider.ShoppingDB
+namespace Business.Entites.Parameters
 {
-    public class User
+    public class UserParameters
     {
-        public Guid ID { get; set; }
-        public string UserName { get; set; } = string.Empty;
+        public string UserName { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
     }

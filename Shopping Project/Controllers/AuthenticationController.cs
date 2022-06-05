@@ -11,21 +11,26 @@ namespace Shopping_Project.Controllers
     {
         private readonly IConfiguration _configuration;
         private AuthenticationProcessor _authenticationProcessor = null;
-        public static User user = new User();
+        public static UserParameters userParam = null;
         public AuthenticationController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public async Task<ActionResult<UserParameters>> Register(UserDto request)
         {
+            userParam = new UserParameters();
             _authenticationProcessor = new AuthenticationProcessor(_configuration);
             _authenticationProcessor.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            user.UserName = request.Username;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-            return Ok(user);
+            userParam.UserName = request.UserName;
+            userParam.PasswordHash = passwordHash;
+            userParam.PasswordSalt = passwordSalt;
+
+            if (!_authenticationProcessor.SaveUser(userParam))
+                return BadRequest("Username Already Exists !!");
+
+            return Ok();
         }
 
         [HttpPost("Login")]
@@ -33,14 +38,11 @@ namespace Shopping_Project.Controllers
         {
             _authenticationProcessor = new AuthenticationProcessor(_configuration);
 
-            if (request.Username != user.UserName)
-                return BadRequest("Wrong username");
+            if (!_authenticationProcessor.VerifyUser(request))
+                return BadRequest("Wrong Username or Password");
 
-            if(!_authenticationProcessor.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-                return BadRequest("Wrong Password");
-
-            var token = _authenticationProcessor.CreateToken(user);
-            return Ok(token);
+            var token = _authenticationProcessor.CreateToken(request);
+            return Ok();
         }
 
 

@@ -1,23 +1,40 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Business.Entites.Parameters;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SQL_Provider.ShoppingDB;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Processors
 {
     public class AuthenticationProcessor
     {
         private readonly IConfiguration _configuration;
+        private ShoppingContext _shoppingContext;
+        private static User user = null;
+
         public AuthenticationProcessor(IConfiguration configuration)
         {
             _configuration = configuration;
+        }
+
+        public bool SaveUser(UserParameters userParams)
+        {
+            user = new User();
+            _shoppingContext = new ShoppingContext(_configuration);
+            var existUsername = _shoppingContext.Users.Where(ob => ob.UserName.Contains(userParams.UserName));
+            if (existUsername.FirstOrDefault() != null)
+                return false;
+
+            user.ID = Guid.NewGuid();
+            user.UserName = userParams.UserName;
+            user.PasswordHash = userParams.PasswordHash;
+            user.PasswordSalt = userParams.PasswordSalt;
+
+            _shoppingContext.Users.Add(user);
+            _shoppingContext.SaveChanges();
+            return true;
         }
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -27,17 +44,30 @@ namespace Business.Processors
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
-        }       
-        public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        }     
+        
+        public bool VerifyUser(UserDto userDto)
         {
-            using (var hmac = new HMACSHA512(passwordSalt))
+            _shoppingContext = new ShoppingContext(_configuration);
+            bool isUserVerified = false;
+            var user = _shoppingContext.Users.Where( ob => ob.UserName.Contains(userDto.UserName));
+
+            if (user.FirstOrDefault() != null)
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
+                byte[] passwordHash = user.FirstOrDefault().PasswordHash;
+                byte[] passwordSalt = user.FirstOrDefault().PasswordSalt;
+
+                using (var hmac = new HMACSHA512(passwordSalt))
+                {
+                    var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(userDto.Password));
+                    bool isPasswordVerified =  computedHash.SequenceEqual(passwordHash);
+                    isUserVerified = isPasswordVerified;
+                }
             }
-            
+            return isUserVerified;
         }
-        public string CreateToken(User user)
+
+        public string CreateToken(UserDto user)
         {
             List<Claim> claims = new List<Claim>
             {
