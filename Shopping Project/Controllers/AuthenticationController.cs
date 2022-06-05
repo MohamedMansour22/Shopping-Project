@@ -18,16 +18,12 @@ namespace Shopping_Project.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult<UserParameters>> Register(UserDto request)
+        public async Task<ActionResult<UserParameters>> Register(SignupParameters request)
         {
-            userParam = new UserParameters();
             _authenticationProcessor = new AuthenticationProcessor(_configuration);
             _authenticationProcessor.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            userParam.UserName = request.UserName;
-            userParam.PasswordHash = passwordHash;
-            userParam.PasswordSalt = passwordSalt;
 
-            if (!_authenticationProcessor.SaveUser(userParam))
+            if (!_authenticationProcessor.SaveUser(request, passwordHash, passwordSalt))
                 return BadRequest("Username Already Exists !!");
 
             return Ok();

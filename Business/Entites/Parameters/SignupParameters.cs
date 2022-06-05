@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SQL_Provider.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Entites.Parameters
 {
-    public class UserDto
+    public class SignupParameters
     {
         [Required]
         [StringLength(100, MinimumLength = 3)]
@@ -17,5 +13,14 @@ namespace Business.Entites.Parameters
         [StringLength(100, MinimumLength = 6)]
         public string Password { get; set; }
 
+        [Required]
+        public DateOnly Birthdate { get; set; }
+
+        [Required]
+        public Gender Gender { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
     }
 }

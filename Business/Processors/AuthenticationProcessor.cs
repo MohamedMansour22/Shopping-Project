@@ -19,7 +19,7 @@ namespace Business.Processors
             _configuration = configuration;
         }
 
-        public bool SaveUser(UserParameters userParams)
+        public bool SaveUser(SignupParameters userParams, byte[] passwordHash, byte[] passwordSalt )
         {
             user = new User();
             _shoppingContext = new ShoppingContext(_configuration);
@@ -29,8 +29,12 @@ namespace Business.Processors
 
             user.ID = Guid.NewGuid();
             user.UserName = userParams.UserName;
-            user.PasswordHash = userParams.PasswordHash;
-            user.PasswordSalt = userParams.PasswordSalt;
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            user.Email = userParams.Email;
+            user.Gender = userParams.Gender;
+            user.Email = userParams.Email;
+            user.Birthdate = userParams.Birthdate;
 
             _shoppingContext.Users.Add(user);
             _shoppingContext.SaveChanges();
