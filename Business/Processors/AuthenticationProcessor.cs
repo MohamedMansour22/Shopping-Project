@@ -23,7 +23,7 @@ namespace Business.Processors
         {
             user = new User();
             _shoppingContext = new ShoppingContext(_configuration);
-            var existUsername = _shoppingContext.Users.Where(ob => ob.UserName.Contains(userParams.UserName));
+            var existUsername = _shoppingContext.Users.Where(ob => ob.UserName.Equals(userParams.UserName));
             if (existUsername.FirstOrDefault() != null)
                 return false;
 

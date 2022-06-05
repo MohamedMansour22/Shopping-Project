@@ -14,7 +14,7 @@ namespace Business.Entites.Parameters
         public string Password { get; set; }
 
         [Required]
-        public DateOnly Birthdate { get; set; }
+        public DateTime Birthdate { get; set; }
 
         [Required]
         public Gender Gender { get; set; }
