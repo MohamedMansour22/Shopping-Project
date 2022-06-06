@@ -17,5 +17,6 @@ namespace Business.Entites.Parameters
         [StringLength(100, MinimumLength = 6)]
         public string Password { get; set; }
 
+
     }
 }

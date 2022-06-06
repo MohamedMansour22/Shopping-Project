@@ -34,11 +34,11 @@ namespace Shopping_Project.Controllers
         {
             _authenticationProcessor = new AuthenticationProcessor(_configuration);
 
-            if (!_authenticationProcessor.VerifyUser(request))
+            if (!_authenticationProcessor.VerifyUser(request, out string userID))
                 return BadRequest("Wrong Username or Password");
 
-            var token = _authenticationProcessor.CreateToken(request);
-            return Ok();
+            var token = _authenticationProcessor.CreateToken(request, userID);
+            return Ok(token);
         }
 
 

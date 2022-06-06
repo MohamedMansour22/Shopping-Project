@@ -1,11 +1,6 @@
 ﻿using Business.Entites.Results;
 using Microsoft.Extensions.Configuration;
 using SQL_Provider.ShoppingDB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Processor
 {
@@ -30,7 +25,6 @@ namespace Business.Processor
                 productResult.Quantity = product.Quantity;
                 productResult.Price = product.Price;
                 results.Add(productResult);
-                
             }
             return results;
         }

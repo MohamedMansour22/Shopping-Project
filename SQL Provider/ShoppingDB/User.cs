@@ -12,7 +12,7 @@ namespace SQL_Provider.ShoppingDB
         public DateTime Birthdate { get; set; }
         public Gender Gender { get; set; }
         public string Email { get; set; }
-
+        public Role Role { get; set; }
 
     }
 }

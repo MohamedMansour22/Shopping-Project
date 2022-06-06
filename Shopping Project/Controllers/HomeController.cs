@@ -1,6 +1,8 @@
 using Business.Entites.Results;
 using Business.Processor;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SQL_Provider.Enums;
 
 namespace Shopping_Project.Controllers
 {
@@ -18,7 +20,7 @@ namespace Shopping_Project.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet(Name = "GetProducts")]
+        [HttpGet(Name = "GetProducts") , Authorize(Roles = Roles.Buyer)]
         public IEnumerable<ProductResult> Get()
         {
             productProcessor = new ProductProcessor(_configuration);

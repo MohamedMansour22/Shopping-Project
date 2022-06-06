@@ -50,7 +50,7 @@ namespace Business.Processors
             }
         }     
         
-        public bool VerifyUser(UserDto userDto)
+        public bool VerifyUser(UserDto userDto, out string userID)
         {
             _shoppingContext = new ShoppingContext(_configuration);
             bool isUserVerified = false;
@@ -67,15 +67,22 @@ namespace Business.Processors
                     bool isPasswordVerified =  computedHash.SequenceEqual(passwordHash);
                     isUserVerified = isPasswordVerified;
                 }
+                
             }
+
+            userID = user.FirstOrDefault().ID.ToString();
+
             return isUserVerified;
         }
 
-        public string CreateToken(UserDto user)
+        public string CreateToken(UserDto user, string userID)
         {
+            _shoppingContext = new ShoppingContext(_configuration);
+            var loggedUser = _shoppingContext.Users.Where(u => u.ID.ToString() == userID).FirstOrDefault();
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, loggedUser.Role.ToString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
