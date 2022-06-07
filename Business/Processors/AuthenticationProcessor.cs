@@ -35,6 +35,7 @@ namespace Business.Processors
             user.Gender = userParams.Gender;
             user.Email = userParams.Email;
             user.Birthdate = userParams.Birthdate;
+            user.Role = userParams.Role;    
 
             _shoppingContext.Users.Add(user);
             _shoppingContext.SaveChanges();

@@ -22,7 +22,7 @@ namespace Shopping_Project.Controllers
         {
             _authenticationProcessor = new AuthenticationProcessor(_configuration);
             _authenticationProcessor.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
+            
             if (!_authenticationProcessor.SaveUser(request, passwordHash, passwordSalt))
                 return BadRequest("Username Already Exists !!");
 

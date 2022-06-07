@@ -13,6 +13,7 @@ namespace SQL_Provider.ShoppingDB
         public Gender Gender { get; set; }
         public string Email { get; set; }
         public Role Role { get; set; }
+        public ICollection<Product> Products { get; set; }
 
     }
 }

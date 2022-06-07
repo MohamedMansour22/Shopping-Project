@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SQL_Provider.Enums
 {
-    public enum Role
+    public static class Roles
     {
-        Buyer,
-        Seller
+        public const string Buyer = "Buyer";
+        public const string Seller = "Seller";
     }
 }

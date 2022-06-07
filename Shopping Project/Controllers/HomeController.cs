@@ -20,13 +20,24 @@ namespace Shopping_Project.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet(Name = "GetProducts") , Authorize(Roles = Roles.Buyer)]
-        public IEnumerable<ProductResult> Get()
+        [HttpGet("GetProducts") , Authorize(Roles = Roles.Buyer)]
+        public IEnumerable<ProductResult> GetProducts()
         {
             productProcessor = new ProductProcessor(_configuration);
             var products = productProcessor.GetProducts();
 
             return products;
+        }
+
+        [HttpPost("PostProducts") , Authorize(Roles = Roles.Seller)]
+        public async Task<ActionResult<string>> PostProducts(ProductParamerters productParamerters)
+        {
+            string currentUsername = User.Identity.Name;
+
+            productProcessor = new ProductProcessor(_configuration);
+            var products = productProcessor.PostProducts(productParamerters, currentUsername);
+
+            return Ok();
         }
     }
 }
